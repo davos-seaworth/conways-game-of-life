@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <ncurses.h>
+#include <curses.h>
 
 int** createGrid(int x, int y)
 {
@@ -192,24 +194,39 @@ int** onestep(int** board, int rows, int columns)
 }
 
 void printGrid(int** board, int rows, int columns)
-{
+{char st[1];sprintf(st, "%d", columns);mvaddstr(0,0,st);
 	int i,j;
-	for(i=0;i<columns;i++)
-	{
-		for(j=0;j<rows;j++)
+	for(i=0;i<rows;i++)
+	{char str[columns];
+		for(j=0;j<columns;j++)
 		{
-			printf("%d", board[j][i]);printf("|");
+			
+			str[j] = (char)(board[i][j]+48);
+			/*printf("%d|",board[i][j]);*/
+			
 		}
-		printf("\n");
-	}
+		/*printf("\n");*/
+		mvaddstr(i, 0, str);
+    		
+	}refresh();
+    	usleep(500000);
 }
 
 main()
 {
+	WINDOW * mainwin;
+/*	initscr();	*/
+
+ if ( (mainwin = initscr()) == NULL ) {
+	fprintf(stderr, "Error initialising ncurses.\n");
+	exit(EXIT_FAILURE);
+    }
+
+	
 	setvbuf (stdout, NULL, _IONBF, 0);
 	printf("asds \n");
-	int rows= 10;
-	int columns= 10;
+	int rows= 20;
+	int columns= 20;
 	int** grid = createGrid(rows,columns);
 
 	/*grid[2][2]=1;grid[3][2]=1;grid[2][1]=1;grid[2][3]=1;*//*grid[1][2]=1;*/
@@ -220,19 +237,42 @@ main()
 	int o = 0;
 	while(o<100)
 	{
-	usleep(125000);
+	/*usleep(125000);*/
 	
 	newgrid = onestep(grid, rows, columns);
 	int i;
 	for(i=0;i<rows;i++)
 		free(grid[i]);
 	free(grid);
-	printf("\n");
+	/*printf("\n");*/
 	printGrid(newgrid, rows, columns);
 	o++;
 	grid = newgrid;
 	}
 
+	mvaddstr(0, 0, "H");
+    	refresh();
+    	usleep(500000);
+	mvaddstr(0, 1, "e");
+    	refresh();
+    	usleep(500000);
+	mvaddstr(0, 2, "l");
+    	refresh();
+    	usleep(500000);
+	mvaddstr(0, 3, "l");
+    	refresh();
+    	usleep(500000);
+	mvaddstr(0, 4, "o");
+    	refresh();
+    	usleep(500000);
+	mvaddstr(0, 5, "!");
+    	refresh();
+    	usleep(500000);
+
+
+	delwin(mainwin);
+	endwin();
+	refresh();
 	
 
 	return 0;
