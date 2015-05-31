@@ -1,3 +1,3 @@
     # Makefile
-    LDFLAGS=-lncurses
+    LDFLAGS=-lncursesw
     all: conway

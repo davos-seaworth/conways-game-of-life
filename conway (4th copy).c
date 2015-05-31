@@ -210,7 +210,7 @@ int** onestep(int** board, int gridHeight, int gridWidth)
 	return newgen;
 }
 
-void makeDisp(int** board, int gridHeight, int gridWidth, WINDOW *win)
+void makeDisp(int** board, int gridHeight, int gridWidth)
 {
 	int newGridWidth = gridWidth*2;
 	char** disp = createCharGrid(gridHeight, newGridWidth);
@@ -232,16 +232,12 @@ void makeDisp(int** board, int gridHeight, int gridWidth, WINDOW *win)
 		}
 	}
 	for (i=0;i<gridHeight;i++)
-	{/*wchar_t str[newGridWidth];*/
-		for(j=0;j<gridWidth;j++)
-		{wchar_t * str;
-			if(board[j][i]==1)
-				str=L"\u2593\u2593";
-			else
-				str = L"\u2592\u2592";/*disp[j][i];*/
-		mvwaddwstr(win, i+1,(2*j)+1,str);
+	{char str[newGridWidth];
+		for(j=0;j<newGridWidth;j++)
+		{
+			str[j] = disp[j][i];
 		}
-		
+		mvaddstr(i+1,1,str);
 	}refresh();
 	usleep(62500);
 	
@@ -278,7 +274,7 @@ setlocale(LC_ALL, "en_US.UTF-8");
 	fprintf(stderr, "Error initialising ncurses.\n");
 	exit(EXIT_FAILURE);
     }
-int height = 20;
+int height = 29;
 int width = 80;
 
 	mvaddstr(0, 0, "+------------------------------------------------------------------------------+");
@@ -295,15 +291,15 @@ int width = 80;
 
 	
 	int gridHeight= 15;
-	int gridWidth= 20;
+	int gridWidth= 15;
 	int** grid = createGrid(gridHeight,gridWidth);
 	/*grid[2][2]=1;grid[3][2]=1;grid[2][1]=1;grid[2][3]=1;*//*grid[1][2]=1;*/
 	grid[1][0]=1;grid[0][2]=1;grid[1][2]=1;grid[2][2]=1;grid[2][1]=1;
 /*grid[4][4]=1;grid[4][3]=1;grid[4][5]=1;*/
-	makeDisp(grid, gridHeight, gridWidth, mainwin);/*sleep(3);*/
+	makeDisp(grid, gridHeight, gridWidth);sleep(3);
 	int** newgrid;
 	int o = 0;
-	while(o<100)
+	while(o<1)
 	{
 	/*usleep(125000);*/
 	
@@ -314,13 +310,13 @@ int width = 80;
 	free(grid);*/
 
 	/*printf("\n");*/
-	makeDisp(newgrid, gridHeight, gridWidth, mainwin);
+	printGrid(newgrid, gridHeight, gridWidth);
 	o++;
 	grid = newgrid;
 	}
 
 
-/* wchar_t* wstr = L"\u2593";
+wchar_t* wstr = L"\u2593";
 mvwaddwstr(mainwin, 1, 1, wstr);
     	refresh();sleep(2);
     	usleep(500000);
@@ -338,8 +334,7 @@ mvwaddwstr(mainwin, 1, 1, wstr);
     	usleep(500000);
 	mvaddstr(1, 6, "!");
     	refresh();
-    	usleep(500000);*/
-	sleep(3);
+    	usleep(500000);
 
 
 	delwin(mainwin);
