@@ -152,7 +152,7 @@ bool ruleOne(int** board, int rows, int columns, int x, int y)
 bool ruleTwo(int** board, int rows, int columns, int x, int y)
 {
 	int* xarr = getneighborsX(x,rows);
-	int* yarr = getneighborsY(y,rows);
+	int* yarr = getneighborsY(y,columns);
 	int sum = neighborsum(board, xarr, yarr);
 	
 	if(sum>3||sum<2)
@@ -164,7 +164,7 @@ bool ruleTwo(int** board, int rows, int columns, int x, int y)
 bool ruleThree(int** board, int rows, int columns, int x, int y)
 {
 	int* xarr = getneighborsX(x,rows);
-	int* yarr = getneighborsY(y,rows);
+	int* yarr = getneighborsY(y,columns);
 	int sum = neighborsum(board, xarr, yarr);
 	
 	if(sum==3)
@@ -187,14 +187,14 @@ int** onestep(int** board, int rows, int columns)
 			if(board[i][j]==1)
 				newgen[i][j]= ruleTwo(board,rows,columns,i,j);
 			else
-				newgen[i][j]=ruleThree(board, rows, columns, i, j);
+				newgen[i][j]= ruleThree(board, rows, columns, i, j);
 		}
 	}
 	return newgen;
 }
 
 void printGrid(int** board, int rows, int columns)
-{char st[1];sprintf(st, "%d", columns);mvaddstr(0,0,st);
+{/*char st[1];sprintf(st, "%d", columns);mvaddstr(0,0,st);*/
 	int i,j;
 	for(i=0;i<rows;i++)
 	{char str[columns];
@@ -204,12 +204,12 @@ void printGrid(int** board, int rows, int columns)
 			str[j] = (char)(board[i][j]+48);
 			/*printf("%d|",board[i][j]);*/
 			
-		}
+		}/*str[columns+1]='\0';*/
 		/*printf("\n");*/
-		mvaddstr(i, 0, str);
+		mvaddstr(i+1, 1, str);
     		
 	}refresh();
-    	usleep(500000);
+    	usleep(125000);
 }
 
 main()
@@ -221,51 +221,61 @@ main()
 	fprintf(stderr, "Error initialising ncurses.\n");
 	exit(EXIT_FAILURE);
     }
+int height = 29;
+int width = 80;
 
-	
-	setvbuf (stdout, NULL, _IONBF, 0);
-	printf("asds \n");
-	int rows= 20;
-	int columns= 20;
+	mvaddstr(0, 0, "+------------------------------------------------------------------------------+");
+
+	int u;
+	for(u=1;u<height;u++)
+	{
+		mvaddstr(u,0,"|                                                                              |");
+	}
+	mvaddstr(height, 0, "+------------------------------------------------------------------------------+");
+
+	/*setvbuf (stdout, NULL, _IONBF, 0);
+	printf("asds \n");*/
+	int rows= 28;
+	int columns= 78;
 	int** grid = createGrid(rows,columns);
-
 	/*grid[2][2]=1;grid[3][2]=1;grid[2][1]=1;grid[2][3]=1;*//*grid[1][2]=1;*/
 	grid[1][0]=1;grid[0][2]=1;grid[1][2]=1;grid[2][2]=1;grid[2][1]=1;
-
+/*grid[4][4]=1;grid[4][3]=1;grid[4][5]=1;*/
 	printGrid(grid, rows, columns);
 	int** newgrid;
 	int o = 0;
-	while(o<100)
+	while(o<20)
 	{
 	/*usleep(125000);*/
 	
 	newgrid = onestep(grid, rows, columns);
 	int i;
-	for(i=0;i<rows;i++)
+	/*for(i=0;i<rows;i++)
 		free(grid[i]);
-	free(grid);
+	free(grid);*/
+
 	/*printf("\n");*/
 	printGrid(newgrid, rows, columns);
 	o++;
 	grid = newgrid;
 	}
 
-	mvaddstr(0, 0, "H");
+	mvaddstr(1, 1, "H");
     	refresh();
     	usleep(500000);
-	mvaddstr(0, 1, "e");
+	mvaddstr(1, 2, "e");
     	refresh();
     	usleep(500000);
-	mvaddstr(0, 2, "l");
+	mvaddstr(1, 3, "l");
     	refresh();
     	usleep(500000);
-	mvaddstr(0, 3, "l");
+	mvaddstr(1, 4, "l");
     	refresh();
     	usleep(500000);
-	mvaddstr(0, 4, "o");
+	mvaddstr(1, 5, "o");
     	refresh();
     	usleep(500000);
-	mvaddstr(0, 5, "!");
+	mvaddstr(1, 6, "!");
     	refresh();
     	usleep(500000);
 
@@ -277,6 +287,25 @@ main()
 
 	return 0;
 }
+
+
+
+TODO----------
+CREATE GRID OF SOLID BLOCKS INSTEAD OF NUMBERS
+INFORMATION ALSO
+FILE INPUT
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
