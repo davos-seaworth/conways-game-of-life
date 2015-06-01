@@ -25,7 +25,7 @@ where 'example' is the name of the .grid file you intend of feeding the program.
   Additionally, each generation takes 0.625s to elapse.
   
   Pending the implementation of a configuration file, these values are unchanagable unless you edit the source- the positions of which should be fairly evident(as they are commented), but listed here nevertheless-
-  lines: 209(time between generations, in microseconds), 361(initial pause, in seconds), and 396(end pause, in seconds).
+  lines: 154(time between generations, in microseconds), 306(initial pause, in seconds), and 341(end pause, in seconds).
   
   I hope to implement some kind of config file, but until then, please bear with me.
   
