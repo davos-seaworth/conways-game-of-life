@@ -20,21 +20,22 @@ To run, type: './conway < ./example.grid',
   The first line should contain a number(ex. 100) indicating the desired number of generations to run the simulation on.
   The second line should contain the height of the field(ex. 20)
   The third line should contain the width of the field(ex. 30)
-  The rest of the file should contain a visual representation of the grid, where 0 represents dead cells and 1 represents live cells. For example:\n
-          11000\n
-          10000\n
-          00100\n
-          01100\n
-          00000\n
-The above sample grid contains a beacon pattern- the 1s are live, and the 0s dead- the sample input file for this would look like:\n
-          20\n
-          5\n
-          5\n
-          11000\n
-          10000\n
-          00100\n
-          01100\n
-          00000\n     
+  The rest of the file should contain a visual representation of the grid, where 0 represents dead cells and 1 represents live cells. For example:
+          11000
+          
+          10000
+          00100
+          01100
+          00000
+The above sample grid contains a beacon pattern- the 1s are live, and the 0s dead- the sample input file for this would look like:
+          20
+          5
+          5
+          11000
+          10000
+          00100
+          01100
+          00000  
 
 While this representation is somewhat inconvinient- copy and paste are your friend. This kind of format is simpler to use to design your pattern visually(as opposed to just using coordinates), and makes for simpler handling in the code- it's a win win!
 
