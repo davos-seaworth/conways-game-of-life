@@ -21,13 +21,16 @@ To run, type: './conway < ./example.grid',
   The second line should contain the height of the field(ex. 20)
   The third line should contain the width of the field(ex. 30)
   The rest of the file should contain a visual representation of the grid, where 0 represents dead cells and 1 represents live cells. For example:
+  
+  
           11000
-          
           10000
           00100
           01100
           00000
 The above sample grid contains a beacon pattern- the 1s are live, and the 0s dead- the sample input file for this would look like:
+
+
           20
           5
           5
