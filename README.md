@@ -59,7 +59,7 @@ While this representation is somewhat inconvinient- copy and paste are your frie
 
 Also please note that if your input file is not formatted in the specidied way, correct behavior(a correct simulation) is not guaranteed.
 
-Included are three sample grids, titled: glider.grid, glider2.grid, and gliderbeacon.grid. Please look at these if the above was confusing.
+Included are three sample grids, titled: glider.grid, glider2.grid, gliderbeacon.grid, and pulsar.grid. Please look at these if the above was confusing.
 
 
 The final thing to mention is that edges wrap around- so if something goes off screen on the right, it will come back on the left. Please keep this in mind when designing your grid.
