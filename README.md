@@ -40,8 +40,8 @@ where 'example' is the name of the .grid file you intend of feeding the program.
   
           11000
           10000
-          00100
-          01100
+          00010
+          00110
           00000
 The above sample grid contains a beacon pattern- the 1s are live, and the 0s dead- the sample input file for this would look like:
 
@@ -51,8 +51,8 @@ The above sample grid contains a beacon pattern- the 1s are live, and the 0s dea
           5
           11000
           10000
-          00100
-          01100
+          00010
+          00110
           00000  
 
 While this representation is somewhat inconvinient- copy and paste are your friend. This kind of format is simpler to use to design your pattern visually(as opposed to just using coordinates), and makes for simpler handling in the code- it's a win win!
