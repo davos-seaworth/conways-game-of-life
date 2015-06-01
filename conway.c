@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include <ncursesw/ncurses.h>
@@ -10,58 +11,21 @@
 #include <wchar.h>
 
 
-int** createGrid(int x, int y)
-{
-	int** board;
-	board = malloc(y * sizeof(int*));
-	int k;
-	for(k=0;k<y;k++)
-	{
-		board[k] = malloc(x * sizeof(int));
-		if(board[k] == NULL)
-		{
-			/* I sure hope not */
-			return;
-		}
-	}
-
-
-	int i,j;
-
-	for(i=0;i<x;i++)
-	{
-		for(j=0;j<y;j++)
-		{
-			board[i][j]=0;
-		}
-	}
-
-	return board;
-}
-
-char** createCharGrid(int x, int y)
+/*
+*	Creates the logical grid that the rules are executed on
+*/
+char** createGrid(int height, int width)
 {
 	char** board;
-	board = malloc(y * sizeof(char*));
-	int k;
-	for(k=0;k<y;k++)
+	board = malloc(width * sizeof(char*));
+	int i;
+	for(i=0;i<width;i++)
 	{
-		board[k] = malloc(x * sizeof(char));
-		if(board[k] == NULL)
+		board[i] = malloc(height * sizeof(char));
+		if(board[i] == NULL)
 		{
 			/* I sure hope not */
 			return;
-		}
-	}
-
-
-	int i,j;
-
-	for(i=0;i<x;i++)
-	{
-		for(j=0;j<y;j++)
-		{
-			board[i][j]=0;
 		}
 	}
 
@@ -69,6 +33,9 @@ char** createCharGrid(int x, int y)
 }
 
 
+/*
+* Retrireves X coordinates of surrounding cells
+*/
 int* getneighborsX(int x, int gridWidth)
 {
 	int * arr;
@@ -114,6 +81,9 @@ int* getneighborsX(int x, int gridWidth)
 	
 }
 
+/*
+*	Retrieves Y coordinates of surrounding cells
+*/
 int* getneighborsY(int y, int gridHeight)
 {
 	int * arr;
@@ -160,237 +130,270 @@ int* getneighborsY(int y, int gridHeight)
 	return arr;
 }
 
-int neighborsum(int** board, int* xarr, int* yarr)
+/*
+*	Returns sum of surrounding cells
+*/
+int neighborsum(char** board, int* xarr, int* yarr)
 {
-	int sum = board[xarr[1]][yarr[1]] + board[xarr[2]][yarr[2]] + board[xarr[3]][yarr[3]] + board[xarr[4]][yarr[4]] + board[xarr[5]][yarr[5]] + board[xarr[6]][yarr[6]] + board[xarr[7]][yarr[7]] + board[xarr[0]][yarr[0]];
-	return sum;
+	return board[xarr[1]][yarr[1]] + board[xarr[2]][yarr[2]] + board[xarr[3]][yarr[3]] + board[xarr[4]][yarr[4]] + board[xarr[5]][yarr[5]] + board[xarr[6]][yarr[6]] + board[xarr[7]][yarr[7]] + board[xarr[0]][yarr[0]];
 }
 
-bool ruleTwo(int** board, int gridHeight, int gridWidth, int x, int y)
+/*
+*	IF the sum of surrdounging cells is less than 2 or greater than 3, return 0(death)
+*/
+bool bringDeath(char** board, int gridHeight, int gridWidth, int x, int y)
 {
 	int* xarr = getneighborsX(x,gridWidth);
 	int* yarr = getneighborsY(y,gridHeight);
 	int sum = neighborsum(board, xarr, yarr);
 	
-	if(sum>3||sum<2)
-		return false;
-	else
-		return true;
+	return !(sum>3||sum<2);
 }
-
-bool ruleThree(int** board, int gridHeight, int gridWidth, int x, int y)
+/*
+*	If the sum of surrounding cells is equal to 3, return 1(life)
+*/
+bool createLife(char** board, int gridHeight, int gridWidth, int x, int y)
 {
 	int* xarr = getneighborsX(x,gridWidth);
 	int* yarr = getneighborsY(y,gridHeight);
 	int sum = neighborsum(board, xarr, yarr);
 
-	if(sum==3)
-		return true;
-	return false;
+	return (sum==3);
 	
 }
 
-int** onestep(int** board, int gridHeight, int gridWidth)
+/*
+*	Perform one tick- applying both rules to every cell all at once
+*/
+char** onestep(char** board, int gridHeight, int gridWidth)
 {
-	int** newgen = createGrid(gridHeight, gridWidth);
-
+	char** newgen = createGrid(gridHeight, gridWidth);
 	int i,j;
 	for (i=0;i<gridHeight;i++)
 	{
 		for (j=0;j<gridWidth;j++)
 		{
-			newgen[j][i]=board[j][i];
 			if(board[j][i]==1)
-				newgen[j][i]= ruleTwo(board,gridHeight,gridWidth,j,i);
-			else{
-				newgen[j][i]= ruleThree(board, gridHeight, gridWidth, j, i);
-				/*printf("3453535345");*/}
+				newgen[j][i]= bringDeath(board,gridHeight,gridWidth,j,i);
+			else
+				newgen[j][i]= createLife(board, gridHeight, gridWidth, j, i);
 		}
 	}
 	return newgen;
 }
 
-void makeDisp(int** board, int gridHeight, int gridWidth, WINDOW *win)
+/*
+*	Translates logical grid to one suited for display, and draws to screen
+*/
+void displayGrid(char** board, int gridHeight, int gridWidth, WINDOW *win)
 {
-	int newGridWidth = gridWidth*2;
-	char** disp = createCharGrid(gridHeight, newGridWidth);
 	int i,j;
 	for (i=0;i<gridHeight;i++)
 	{
-		for (j=0;j<gridWidth;j++)
-		{
-			if(board[j][i]==1)
-			{
-				disp[2*j][i] = 178;
-				disp[(2*j)+1][i] = 178;
-			}
-			else
-			{
-				disp[2*j][i] = 176;
-				disp[(2*j)+1][i] = 176;
-			}
-		}
-	}
-	for (i=0;i<gridHeight;i++)
-	{/*wchar_t str[newGridWidth];*/
 		for(j=0;j<gridWidth;j++)
 		{wchar_t * str;
 			if(board[j][i]==1)
 				str=L"\u2593\u2593";
 			else
-				str = L"\u2592\u2592";/*disp[j][i];*/
-		mvwaddwstr(win, i+1,(2*j)+1,str);
+				str = L"\u2592\u2592";
+		mvwaddwstr(win, i+2,(2*j)+1,str);
 		}
 		
-	}refresh();
+	}
+	refresh();
 	usleep(62500);
-	
 }
 
 
-void printGrid(int** board, int gridHeight, int gridWidth)
-{/*char st[1];sprintf(st, "%d", gridWidth);mvaddstr(0,0,st);*/
+int numLiving(char** board, int gridHeight, int gridWidth)
+{
+	int living = 0;
 	int i,j;
 	for(i=0;i<gridHeight;i++)
-	{char str[gridWidth];
 		for(j=0;j<gridWidth;j++)
-		{
-			
-			str[j] = (char)(board[j][i]+48);
-			/*printf("%d",board[j][i]);*/
-		/*	printf("%d|",board[i][j]);*/
-			
-		}/*str[gridWidth+1]='\0';*/
-		/*printf("\n");*/
-		mvaddstr(i+1, 1, str);
-    		
-	}refresh();
-    	usleep(62500);
+			if(board[j][i]==1)
+				living++;
+	return living;
+}
+
+int numDead(char** board, int gridHeight, int gridWidth)
+{
+	int dead = 0;
+	int i,j;
+	for(i=0;i<gridHeight;i++)
+		for(j=0;j<gridWidth;j++)
+			if(board[j][i]==0)
+				dead++;
+	return dead;
 }
 
 
-main()
+
+main(int argc, char **argv)
 {
-setlocale(LC_ALL, "en_US.UTF-8");
+//File input
+	FILE* input;
+	input = stdin;
+	if(input==NULL)
+		exit(EXIT_FAILURE);
+	char* line = NULL;
+	size_t len = 0;
+	ssize_t read;
+
+	int a, b, duration;
+	int q=0;
+
+	char** grid;
+	/*
+	Read in the seed from standard input
+	*/
+	while((read = getline(&line, &len, input))!=-1)
+	{
+
+		if(q==0)
+			sscanf(line,"%d",&duration);
+		else if(q==1)
+			sscanf(line,"%d",&a);
+		else if(q==2)
+		{
+			sscanf(line,"%d",&b);
+			grid = createGrid(a, b);
+		}
+		else
+		{
+			int i,j;
+			for (i=q-2;i<a;i++)
+			{
+				for (j=0;j<b;j++)
+				{
+					grid[j][i]=line[j]-48;
+				}
+			}
+		}
+		q++;
+	}
+
+	int gridHeight= a;
+	int gridWidth= b;
+
+//Sets locale for displaying of unicode characters
+	setlocale(LC_ALL, "en_US.UTF-8");
+//Creates window which will be drawn to
 	WINDOW * mainwin;
 
- if ( (mainwin = initscr()) == NULL ) {
-	fprintf(stderr, "Error initialising ncurses.\n");
-	exit(EXIT_FAILURE);
-    }
-int height = 20;
-int width = 80;
-
-	mvaddstr(0, 0, "+------------------------------------------------------------------------------+");
-
-	int u;
-	for(u=1;u<height;u++)
+//If something goes wrong initializing ncurses, here we are
+	if ( (mainwin = initscr()) == NULL )
 	{
-		mvaddstr(u,0,"|                                                                              |");
+		fprintf(stderr, "Still hope not");
+		exit(EXIT_FAILURE);
 	}
-	mvaddstr(height, 0, "+------------------------------------------------------------------------------+");
 
-	/*setvbuf (stdout, NULL, _IONBF, 0);
-	printf("asds \n");*/
 
-	
-	int gridHeight= 15;
-	int gridWidth= 20;
-	int** grid = createGrid(gridHeight,gridWidth);
-	/*grid[2][2]=1;grid[3][2]=1;grid[2][1]=1;grid[2][3]=1;*//*grid[1][2]=1;*/
-	grid[1][0]=1;grid[0][2]=1;grid[1][2]=1;grid[2][2]=1;grid[2][1]=1;
-/*grid[4][4]=1;grid[4][3]=1;grid[4][5]=1;*/
-	makeDisp(grid, gridHeight, gridWidth, mainwin);/*sleep(3);*/
-	int** newgrid;
+//Calculate dimensions of window
+	int height = gridHeight+2;;
+	int width = (gridWidth*2)+2;
+
+//Prepare top line for information display
+	mvaddstr(0,0,"generation: ");
+	mvaddstr(0,19,"live cells: ");
+	mvaddstr(0,38,"dead cells: ");
+
+//Upper border decoration
+	int dash;
+	mvaddstr(1,0,"+");
+	for(dash=1;dash<width-1;dash++)
+	{
+		mvaddstr(1,dash,"-");
+	}
+	mvaddstr(1,width-1,"+");
+
+//Horizontal border decoration
+	int ht;
+	for(ht=1;ht<height-1;ht++)
+	{
+		mvaddstr(ht+1,0,"|");
+		for(dash=1;dash<width-1;dash++)
+		{
+			mvaddstr(ht+1,dash," ");
+		}
+		mvaddstr(ht+1,width-1,"|");
+	}
+//Bottom border decoration
+	mvaddstr(height,0,"+");
+	for(dash=1;dash<width-1;dash++)
+	{
+		mvaddstr(height,dash,"-");
+	}
+	mvaddstr(height,width-1,"+");
+
+//Loop variables
+	int i,j;
+
+
+//Display the initial setting
+	displayGrid(grid, gridHeight, gridWidth, mainwin);
+//Calculate and display initial generation	
+	int generation = 0;
+	char gen[6];
+	sprintf(gen,"%d",generation);
+	mvaddstr(0,12,gen);
+//Calculate and display initial number of live cells
+	int living = numLiving(grid, gridHeight, gridWidth);
+	char liv[6];
+	sprintf(liv,"%d",living);
+	mvaddstr(0,31,liv);
+//Calculate and idsplay initial number of dead cells
+	int dead = numDead(grid, gridHeight, gridWidth);
+	char ded[6];
+	sprintf(ded,"%d",dead);
+	mvaddstr(0,50,ded);
+
+
+//Prepare loop variables
+	char** newgrid;
 	int o = 0;
-	while(o<100)
+//Pause to allow user to see initial setting
+	sleep(2);
+//Main loop- operates for duration cycles, which is settable in your input file
+	while(o<duration)
 	{
-	/*usleep(125000);*/
+//Calculate next generation and store in newgrid
+		newgrid = onestep(grid, gridHeight, gridWidth);
+//Free memory used by old generation
+		for(i=0;i<gridHeight;i++)
+			free(grid[i]);
+		free(grid);
 	
-	newgrid = onestep(grid, gridHeight, gridWidth);
-	int i;
-	/*for(i=0;i<gridHeight;i++)
-		free(grid[i]);
-	free(grid);*/
+//Do generation calculation for this generation
+		generation++;
+		sprintf(gen,"%d",generation);
+		mvaddstr(0,12,gen);
+//Do living cell calculation for this generation
+		living = numLiving(newgrid, gridHeight, gridWidth);
+		sprintf(liv,"%d",living);
+		mvaddstr(0,31,"       ");
+		mvaddstr(0,31,liv);
+//Do dead cell calculation for this generation
+		dead = numDead(newgrid, gridHeight, gridWidth);
+		sprintf(ded,"%d",dead);
+		mvaddstr(0,50,"       ");
+		mvaddstr(0,50,ded);
+	
 
-	/*printf("\n");*/
-	makeDisp(newgrid, gridHeight, gridWidth, mainwin);
-	o++;
-	grid = newgrid;
+//Display new generation
+		displayGrid(newgrid, gridHeight, gridWidth, mainwin);
+
+		grid = newgrid;
+		//mvaddstr(ht+2,0,">");refresh();
+		o++;
 	}
+//Sleep to give time to view final grid
+	sleep(5);
 
-
-/* wchar_t* wstr = L"\u2593";
-mvwaddwstr(mainwin, 1, 1, wstr);
-    	refresh();sleep(2);
-    	usleep(500000);
-	mvaddstr(1, 2, "e");
-    	refresh();
-    	usleep(500000);
-	mvaddstr(1, 3, "l");
-    	refresh();
-    	usleep(500000);
-	mvaddstr(1, 4, "l");
-    	refresh();
-    	usleep(500000);
-	mvaddstr(1, 5, "o");
-    	refresh();
-    	usleep(500000);
-	mvaddstr(1, 6, "!");
-    	refresh();
-    	usleep(500000);*/
-	sleep(3);
-
-
+//Clean up window
 	delwin(mainwin);
 	endwin();
-	refresh();
-	
-	
-
+	refresh();	
+//Exit
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
