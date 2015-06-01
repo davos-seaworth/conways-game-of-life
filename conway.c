@@ -1,3 +1,7 @@
+/*Conway's Game of Life in C!
+By: Andrew Braunlich, 2015
+*/
+
 #define _X_OPEN_SOURCE_EXTENDED
 
 #include <stdio.h>
