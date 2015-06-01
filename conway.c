@@ -201,6 +201,7 @@ void displayGrid(char** board, int gridHeight, int gridWidth, WINDOW *win)
 		
 	}
 	refresh();
+	//Time between generations
 	usleep(62500);
 }
 
