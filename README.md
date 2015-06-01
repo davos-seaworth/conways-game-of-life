@@ -4,19 +4,19 @@ C implementation of Conway's Game of Life
 This program requires ncurses to run- to install, in your terminal of choice:
 
 
-sudo apt-get install libncurses5-dev
-sudo apt-get install libncursesw5-dev
+    sudo apt-get install libncurses5-dev
+    sudo apt-get install libncursesw5-dev
 
 
 To compile, navigate to the diriectory the files were downloaded to in your favorite terminal, and run:
 
 
-'make -f mk'
+    make -f mk
 If, when compiling, you get a warning about universal character names not being valid, feel free to ignore. This is a byproduct of working with C and has no effect on running.
 To run, type: 
 
 
-'./conway < ./example.grid',
+    ./conway < ./example.grid
 where 'example' is the name of the .grid file you intend of feeding the program.
   
   
