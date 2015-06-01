@@ -13,6 +13,7 @@ To compile, navigate to the diriectory the files were downloaded to in your favo
 
     make -f mk
 If, when compiling, you get a warning about universal character names not being valid, feel free to ignore. This is a byproduct of working with C and has no effect on running.
+
 To run, type: 
 
 
