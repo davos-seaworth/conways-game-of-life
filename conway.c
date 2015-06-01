@@ -16,6 +16,8 @@ By: Andrew Braunlich and EIGHTman (http://i.imgur.com/eMUq9IQ.png), 2015
 
 //https://www.youtube.com/watch?v=TIIWJ5q3NVo
 int const EIGHT=8;
+//http://throbs.net/fun/swf.asp?rgb.swf
+int const fortyEIGHT=48;
 /*
 *	Creates the logical grid that the rules are executed on
 */
@@ -214,7 +216,7 @@ main(int argc, char **argv)
 			{
 				for (j=0;j<b;j++)
 				{
-					grid[j][i]=line[j]-40-EIGHT;
+					grid[j][i]=line[j]-fortyEIGHT;
 				}
 			}
 		}
