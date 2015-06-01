@@ -1,5 +1,5 @@
 /*Conway's Game of Life in C!
-By: Andrew Braunlich, 2015
+By: Andrew Braunlich and EIGHTman (http://i.imgur.com/eMUq9IQ.png), 2015
 */
 
 #define _X_OPEN_SOURCE_EXTENDED
@@ -14,7 +14,8 @@ By: Andrew Braunlich, 2015
 #include <locale.h>
 #include <wchar.h>
 
-
+//https://www.youtube.com/watch?v=TIIWJ5q3NVo
+int const EIGHT=8;
 /*
 *	Creates the logical grid that the rules are executed on
 */
@@ -43,44 +44,16 @@ char** createGrid(int height, int width)
 int* getneighborsX(int x, int gridWidth)
 {
 	int * arr;
-	arr = malloc(8*sizeof(int));
+	arr = malloc(EIGHT*sizeof(int));
 
-	int x1,x2,x3,x4,x5,x6,x7,x8;
-	x1=x-1;	x2=x; x3=x+1; x4=x-1; x5=x+1; x6=x-1; x7=x; x8=x+1;
-	if(x1<0)
-		x1+=gridWidth;
-	if(x2<0)
-		x2+=gridWidth;
-	if(x3<0)
-		x3+=gridWidth;
-	if(x4<0)
-		x4+=gridWidth;
-	if(x5<0)
-		x5+=gridWidth;
-	if(x6<0)
-		x6+=gridWidth;
-	if(x7<0)
-		x7+=gridWidth;
-	if(x8<0)
-		x8+=gridWidth;
-
-	if(x1>gridWidth-1)
-		x1-=gridWidth;
-	if(x2>gridWidth-1)
-		x2-=gridWidth;
-	if(x3>gridWidth-1)
-		x3-=gridWidth;
-	if(x4>gridWidth-1)
-		x4-=gridWidth;
-	if(x5>gridWidth-1)
-		x5-=gridWidth;
-	if(x6>gridWidth-1)
-		x6-=gridWidth;
-	if(x7>gridWidth-1)
-		x7-=gridWidth;
-	if(x8>gridWidth-1)
-		x8-=gridWidth;
-	arr[0]=x1;arr[1]=x2;arr[2]=x3;arr[3]=x4;arr[4]=x5;arr[5]=x6;arr[6]=x7;arr[7]=x8;
+	arr[0]=x-1;	arr[1]=x; arr[2]=x+1; arr[3]=x-1; arr[4]=x+1; arr[5]=x-1; arr[6]=x; arr[7]=x+1;
+	
+	for ( i = 0; i < EIGHT; i++ ) {
+		if(arr[i]<0)
+			arr[i]+=gridWidth;
+		if(arr[i]>gridWidth-1)
+			arr[i]-=gridWidth;
+    }
 	return arr;
 	
 }
@@ -91,46 +64,16 @@ int* getneighborsX(int x, int gridWidth)
 int* getneighborsY(int y, int gridHeight)
 {
 	int * arr;
-	arr = malloc(8*sizeof(int));
+	arr = malloc(EIGHT*sizeof(int));
 
-	int y1,y2,y3,y4,y5,y6,y7,y8;
-	y1=y-1; y2=y-1; y3=y-1; y4=y; y5=y; y6=y+1; y7=y+1; y8=y+1;
+	arr[0]=y-1; arr[1]=y-1; arr[2]=y-1; arr[3]=y; arr[4]=y; arr[5]=y+1; arr[6]=y+1; arr[7]=y+1;
 
-	if(y1<0)
-		y1+=gridHeight;
-	if(y2<0)
-		y2+=gridHeight;
-	if(y3<0)
-		y3+=gridHeight;
-	if(y4<0)
-		y4+=gridHeight;
-	if(y5<0)
-		y5+=gridHeight;
-	if(y6<0)
-		y6+=gridHeight;
-	if(y7<0)
-		y7+=gridHeight;
-	if(y8<0)
-		y8+=gridHeight;
-
-	if(y1>gridHeight-1)
-		y1-=gridHeight;
-	if(y2>gridHeight-1)
-		y2-=gridHeight;
-	if(y3>gridHeight-1)
-		y3-=gridHeight;
-	if(y4>gridHeight-1)
-		y4-=gridHeight;
-	if(y5>gridHeight-1)
-		y5-=gridHeight;
-	if(y6>gridHeight-1)
-		y6-=gridHeight;
-	if(y7>gridHeight-1)
-		y7-=gridHeight;
-	if(y8>gridHeight-1)
-		y8-=gridHeight;
-
-	arr[0]=y1;arr[1]=y2;arr[2]=y3;arr[3]=y4;arr[4]=y5;arr[5]=y6;arr[6]=y7;arr[7]=y8;
+	for ( i = 0; i < EIGHT; i++ ) {
+		if(arr[i]<0)
+			arr[i]+=gridHeight;
+		if(arr[i]>gridHeight-1)
+			arr[i]-=gridHeight;
+    }
 	return arr;
 }
 
@@ -271,7 +214,7 @@ main(int argc, char **argv)
 			{
 				for (j=0;j<b;j++)
 				{
-					grid[j][i]=line[j]-48;
+					grid[j][i]=line[j]-40-EIGHT;
 				}
 			}
 		}
