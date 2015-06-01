@@ -1,5 +1,5 @@
 /*Conway's Game of Life in C!
-By: Andrew Braunlich, 2015
+By: Andrew Braunlich and EIGHTman (http://i.imgur.com/eMUq9IQ.png), 2015
 */
 
 #define _X_OPEN_SOURCE_EXTENDED
@@ -14,7 +14,7 @@ By: Andrew Braunlich, 2015
 #include <locale.h>
 #include <wchar.h>
 
-//Eight
+//https://www.youtube.com/watch?v=TIIWJ5q3NVo
 int const EIGHT=8;
 /*
 *	Creates the logical grid that the rules are executed on
@@ -44,7 +44,7 @@ char** createGrid(int height, int width)
 int* getneighborsX(int x, int gridWidth)
 {
 	int * arr;
-	arr = malloc(8*sizeof(int));
+	arr = malloc(EIGHT*sizeof(int));
 
 	arr[0]=x-1;	arr[1]=x; arr[2]=x+1; arr[3]=x-1; arr[4]=x+1; arr[5]=x-1; arr[6]=x; arr[7]=x+1;
 	
@@ -64,7 +64,7 @@ int* getneighborsX(int x, int gridWidth)
 int* getneighborsY(int y, int gridHeight)
 {
 	int * arr;
-	arr = malloc(8*sizeof(int));
+	arr = malloc(EIGHT*sizeof(int));
 
 	arr[0]=y-1; arr[1]=y-1; arr[2]=y-1; arr[3]=y; arr[4]=y; arr[5]=y+1; arr[6]=y+1; arr[7]=y+1;
 
@@ -214,7 +214,7 @@ main(int argc, char **argv)
 			{
 				for (j=0;j<b;j++)
 				{
-					grid[j][i]=line[j]-48;
+					grid[j][i]=line[j]-40-EIGHT;
 				}
 			}
 		}
