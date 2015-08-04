@@ -55,7 +55,7 @@ The above sample grid contains a beacon pattern- the 1s are live, and the 0s dea
           00110
           00000  
 
-While this representation is somewhat inconvinient- copy and paste are your friend. This kind of format is simpler to use to design your pattern visually(as opposed to just using coordinates), and makes for simpler handling in the code- it's a win win!
+While this representation is somewhat inconvenient- copy and paste are your friend. This kind of format is simpler to use to design your pattern visually(as opposed to just using coordinates), and makes for simpler handling in the code- it's a win win!
 
 Also please note that if your input file is not formatted in the specified way, correct behavior(a correct simulation) is not guaranteed.
 
